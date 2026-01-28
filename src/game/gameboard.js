@@ -20,12 +20,12 @@ export default class Gameboard {
         if (square[0] === coord[0] && square[1] === coord[1]) {
           entry.ship.hit();
           this.hitShots.push(coord);
-          return;
+          return true;
         }
       }
     }
-
     this.missedShots.push(coord);
+    return false;
   }
 
   allShipsSunk() {

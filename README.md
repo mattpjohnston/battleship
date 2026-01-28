@@ -4,7 +4,7 @@ A Battleship game built for The Odin Project, featuring a Greyhound movie-inspir
 
 ## Features
 
-- **Ship Placement** - Randomize your fleet positioning before battle
+- **Ship Placement** - Randomise your fleet positioning before battle
 - **Turn-based Combat** - Click enemy waters to attack, then the computer responds
 - **Computer AI** - Makes random legal moves (never attacks the same coordinate twice)
 - **Win/Lose Detection** - Game ends when all ships of either player are sunk
@@ -62,7 +62,7 @@ src/
 
 ## How to Play
 
-1. **Position Your Fleet** - Click "Randomize Fleet" until you're happy with the placement
+1. **Position Your Fleet** - Click "Randomise Fleet" until you're happy with the placement
 2. **Deploy** - Click "Deploy Fleet" to start the battle
 3. **Attack** - Click on the enemy board to fire
 4. **Survive** - Sink all enemy ships before they sink yours

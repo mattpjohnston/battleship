@@ -2,84 +2,77 @@ import Player from "./player.js";
 
 export default class Controller {
   startGame() {
-    this.humanPlayer = new Player("human");
+    this.humanPlayer = new Player("real");
     this.computerPlayer = new Player("computer");
     this.currentPlayer = this.humanPlayer;
   }
 
-  placeShipsPreset(player) {
-    const humanShips = [
-      [
-        [0, 0],
-        [1, 0],
-        [2, 0],
-        [3, 0],
-        [4, 0],
-      ],
-      [
-        [0, 2],
-        [1, 2],
-        [2, 2],
-        [3, 2],
-      ],
-      [
-        [0, 4],
-        [1, 4],
-        [2, 4],
-      ],
-      [
-        [0, 6],
-        [1, 6],
-        [2, 6],
-      ],
-      [
-        [0, 8],
-        [1, 8],
-      ],
-    ];
+  placeShipsRandom(player) {
+    player.gameboard.ships = [];
 
-    const computerShips = [
-      [
-        [5, 0],
-        [5, 1],
-        [5, 2],
-        [5, 3],
-        [5, 4],
-      ],
-      [
-        [7, 0],
-        [7, 1],
-        [7, 2],
-        [7, 3],
-      ],
-      [
-        [9, 0],
-        [9, 1],
-        [9, 2],
-      ],
-      [
-        [9, 5],
-        [9, 6],
-        [9, 7],
-      ],
-      [
-        [7, 8],
-        [7, 9],
-      ],
-    ];
+    const shipLengths = [5, 4, 3, 3, 2];
 
-    const ships = player.type === "human" ? humanShips : computerShips;
+    for (const length of shipLengths) {
+      let placed = false;
 
-    for (let ship of ships) {
-      player.gameboard.placeShip(ship.length, ship);
+      while (!placed) {
+        const coords = this.generateRandomCoords(length);
+
+        if (this.isValidPlacement(player, coords)) {
+          player.gameboard.placeShip(length, coords);
+          placed = true;
+        }
+      }
     }
+  }
+
+  generateRandomCoords(length) {
+    const isHorizontal = Math.random() < 0.5;
+    const coords = [];
+
+    if (isHorizontal) {
+      const x = Math.floor(Math.random() * (10 - length + 1));
+      const y = Math.floor(Math.random() * 10);
+
+      for (let i = 0; i < length; i++) {
+        coords.push([x + i, y]);
+      }
+    } else {
+      const x = Math.floor(Math.random() * 10);
+      const y = Math.floor(Math.random() * (10 - length + 1));
+
+      for (let i = 0; i < length; i++) {
+        coords.push([x, y + i]);
+      }
+    }
+
+    return coords;
+  }
+
+  isValidPlacement(player, coords) {
+    for (const coord of coords) {
+      if (coord[0] < 0 || coord[0] > 9 || coord[1] < 0 || coord[1] > 9) {
+        return false;
+      }
+
+      for (const entry of player.gameboard.ships) {
+        for (const shipCoord of entry.coords) {
+          if (Math.abs(coord[0] - shipCoord[0]) <= 1 && Math.abs(coord[1] - shipCoord[1]) <= 1) {
+            return false;
+          }
+        }
+      }
+    }
+
+    return true;
   }
 
   attack(coord) {
     const beingAttacked =
       this.currentPlayer === this.humanPlayer ? this.computerPlayer : this.humanPlayer;
 
-    return beingAttacked.gameboard.receiveAttack(coord);
+    const wasHit = beingAttacked.gameboard.receiveAttack(coord);
+    return wasHit ? "hit" : "miss";
   }
 
   switchTurn() {
@@ -113,9 +106,8 @@ export default class Controller {
   }
 
   getWinner() {
-    if (this.checkGameOver()) {
-      if (this.humanPlayer.gameboard.allShipsSunk()) return this.computerPlayer.type;
-      else return this.humanPlayer.type;
-    }
+    if (this.computerPlayer.gameboard.allShipsSunk()) return "human";
+    if (this.humanPlayer.gameboard.allShipsSunk()) return "computer";
+    return null;
   }
 }

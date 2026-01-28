@@ -23,14 +23,36 @@ describe("Controller", () => {
     });
   });
 
-  describe("placeShipsPreset()", () => {
+  describe("placeShipsRandom()", () => {
     it("populates a player's gameboard with ships", () => {
       const controller = new Controller();
       controller.startGame();
 
-      controller.placeShipsPreset(controller.humanPlayer);
+      controller.placeShipsRandom(controller.humanPlayer);
 
-      expect(controller.humanPlayer.gameboard.ships.length).toBeGreaterThan(0);
+      expect(controller.humanPlayer.gameboard.ships.length).toBe(5);
+    });
+
+    it("places ships that do not touch each other", () => {
+      const controller = new Controller();
+      controller.startGame();
+
+      controller.placeShipsRandom(controller.humanPlayer);
+
+      const allCoords = controller.humanPlayer.gameboard.ships.flatMap((entry) => entry.coords);
+
+      for (const entry of controller.humanPlayer.gameboard.ships) {
+        for (const coord of entry.coords) {
+          for (const otherEntry of controller.humanPlayer.gameboard.ships) {
+            if (entry === otherEntry) continue;
+            for (const otherCoord of otherEntry.coords) {
+              const xDiff = Math.abs(coord[0] - otherCoord[0]);
+              const yDiff = Math.abs(coord[1] - otherCoord[1]);
+              expect(xDiff > 1 || yDiff > 1).toBe(true);
+            }
+          }
+        }
+      }
     });
   });
 
@@ -40,8 +62,8 @@ describe("Controller", () => {
     beforeEach(() => {
       controller = new Controller();
       controller.startGame();
-      controller.placeShipsPreset(controller.humanPlayer);
-      controller.placeShipsPreset(controller.computerPlayer);
+      controller.placeShipsRandom(controller.humanPlayer);
+      controller.placeShipsRandom(controller.computerPlayer);
     });
 
     it("attacks the enemy gameboard at the given coordinate", () => {
@@ -54,18 +76,30 @@ describe("Controller", () => {
       expect(totalShots).toBe(1);
     });
 
-    it("returns true when attack hits a ship", () => {
+    it("returns 'hit' when attack hits a ship", () => {
       const shipCoord = controller.computerPlayer.gameboard.ships[0].coords[0];
 
       const result = controller.attack(shipCoord);
 
-      expect(result).toBe(true);
+      expect(result).toBe("hit");
     });
 
-    it("returns false when attack misses", () => {
-      const result = controller.attack([9, 9]);
+    it("returns 'miss' when attack misses", () => {
+      const shipCoords = controller.computerPlayer.gameboard.ships.flatMap((e) => e.coords);
+      let missCoord = [0, 0];
 
-      expect(result).toBe(false);
+      for (let x = 0; x < 10; x++) {
+        for (let y = 0; y < 10; y++) {
+          if (!shipCoords.some((c) => c[0] === x && c[1] === y)) {
+            missCoord = [x, y];
+            break;
+          }
+        }
+      }
+
+      const result = controller.attack(missCoord);
+
+      expect(result).toBe("miss");
     });
   });
 
@@ -92,8 +126,8 @@ describe("Controller", () => {
     beforeEach(() => {
       controller = new Controller();
       controller.startGame();
-      controller.placeShipsPreset(controller.humanPlayer);
-      controller.placeShipsPreset(controller.computerPlayer);
+      controller.placeShipsRandom(controller.humanPlayer);
+      controller.placeShipsRandom(controller.computerPlayer);
     });
 
     it("attacks the human player's gameboard", () => {
@@ -123,8 +157,8 @@ describe("Controller", () => {
     it("returns false when ships remain afloat", () => {
       const controller = new Controller();
       controller.startGame();
-      controller.placeShipsPreset(controller.humanPlayer);
-      controller.placeShipsPreset(controller.computerPlayer);
+      controller.placeShipsRandom(controller.humanPlayer);
+      controller.placeShipsRandom(controller.computerPlayer);
 
       expect(controller.checkGameOver()).toBe(false);
     });

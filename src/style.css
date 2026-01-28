@@ -1,1 +1,51 @@
 @import "tailwindcss";
+
+.cell {
+  @apply w-8 h-8 md:w-10 md:h-10 bg-slate-800 border border-slate-600 transition-colors duration-150 flex items-center justify-center;
+}
+
+.cell.ship {
+  @apply bg-slate-600 border-slate-500;
+}
+
+#placement-board .cell.ship {
+  @apply bg-emerald-900/80 border-emerald-700/60;
+}
+
+#computer-board .cell {
+  @apply cursor-crosshair hover:bg-cyan-900/50;
+}
+
+#computer-board .cell.hit {
+  @apply cursor-default hover:bg-red-900;
+}
+
+#computer-board .cell.miss {
+  @apply cursor-default hover:bg-slate-900;
+}
+
+.cell.hit {
+  @apply bg-red-900 border-red-700;
+}
+
+.cell.hit::after {
+  content: "✕";
+  @apply text-red-400 font-bold;
+}
+
+.cell.miss {
+  @apply bg-slate-900 border-slate-600;
+}
+
+.cell.miss::after {
+  content: "•";
+  @apply text-slate-500 text-xl;
+}
+
+#message.victory {
+  @apply text-emerald-300 border-emerald-700;
+}
+
+#message.defeat {
+  @apply text-red-400 border-red-800;
+}

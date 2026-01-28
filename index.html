@@ -5,9 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Battleship</title>
     <link href="/src/style.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body>
-    <div id="app"></div>
+  <body class="min-h-dvh bg-linear-to-b from-slate-900 via-slate-800 to-zinc-900 text-slate-200">
+    <div id="app" class="min-h-dvh flex flex-col items-center justify-center gap-8 p-6">
+      <header class="text-center">
+        <h1
+          class="font-['Special_Elite'] text-4xl md:text-5xl tracking-widest text-slate-100 uppercase drop-shadow-lg"
+        >
+          Battleship
+        </h1>
+        <p class="font-['Share_Tech_Mono'] text-emerald-400/80 text-sm tracking-[0.3em] mt-2">
+          North Atlantic • 1942
+        </p>
+      </header>
+
+      <div
+        id="message"
+        class="font-['Share_Tech_Mono'] text-emerald-400 text-sm md:text-lg tracking-wide bg-slate-950/50 px-4 md:px-6 py-2 rounded border border-emerald-900/50 text-center"
+      >
+        Position your fleet, Captain.
+      </div>
+
+      <div id="placement-phase" class="flex flex-col items-center gap-6">
+        <div class="board-container flex flex-col items-center gap-4">
+          <h2 class="font-['Special_Elite'] text-xl tracking-wider text-slate-400 uppercase">
+            - Your Fleet -
+          </h2>
+          <div
+            id="placement-board"
+            class="board grid grid-cols-10 bg-slate-950 p-2 rounded-lg border-2 border-slate-700 shadow-2xl shadow-slate-950/80"
+          ></div>
+        </div>
+
+        <div class="flex gap-4">
+          <button
+            id="randomise-btn"
+            class="font-['Special_Elite'] px-8 py-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 uppercase tracking-widest text-sm rounded border border-slate-600 hover:border-slate-500 transition-colors duration-200"
+          >
+            Randomise Fleet
+          </button>
+          <button
+            id="start-btn"
+            class="font-['Special_Elite'] px-8 py-3 bg-emerald-900 hover:bg-emerald-800 active:bg-emerald-700 text-emerald-100 uppercase tracking-widest text-sm rounded border border-emerald-700 hover:border-emerald-600 transition-colors duration-200"
+          >
+            Deploy Fleet
+          </button>
+        </div>
+      </div>
+
+      <!--Game phase (hidden initially) -->
+      <div id="game-phase" class="hidden">
+        <div id="boards" class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+          <div class="board-container flex flex-col items-center gap-4">
+            <h2 class="font-['Special_Elite'] text-xl tracking-wider text-slate-400 uppercase">
+              - Allied Fleet -
+            </h2>
+            <div
+              id="human-board"
+              class="board grid grid-cols-10 bg-slate-950 p-2 rounded-lg border-2 border-slate-700 shadow-2xl shadow-slate-950/80"
+            ></div>
+          </div>
+
+          <div class="board-container flex flex-col items-center gap-4">
+            <h2 class="font-['Special_Elite'] text-xl tracking-wider text-red-400/80 uppercase">
+              - Enemy Waters -
+            </h2>
+            <div
+              id="computer-board"
+              class="board grid grid-cols-10 bg-slate-950 p-2 rounded-lg border-2 border-slate-700 shadow-2xl shadow-slate-950/80 cursor-crosshair"
+            ></div>
+          </div>
+        </div>
+
+        <div class="flex justify-center gap-4 mt-8">
+          <button
+            id="new-game"
+            class="font-['Special_Elite'] px-8 py-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 uppercase tracking-widest text-sm rounded border border-slate-600 hover:border-slate-500 transition-all duration-200 shadow-lg hover:shadow-xl hover:shadow-slate-900/50"
+          >
+            New Engagement
+          </button>
+        </div>
+      </div>
+
+      <footer class="text-center mt-4">
+        <p class="font-['Share_Tech_Mono'] text-slate-600 text-s tracking-wider">
+          "The only thing that ever really frightened me during the war was the U-boat peril." -
+          Winston Churchill
+        </p>
+      </footer>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

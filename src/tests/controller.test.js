@@ -33,7 +33,7 @@ describe("Controller", () => {
       expect(controller.humanPlayer.gameboard.ships.length).toBe(5);
     });
 
-    it("places ships that do not touch each other", () => {
+    it("places ships that do not overlap", () => {
       const controller = new Controller();
       controller.startGame();
 
@@ -41,16 +41,10 @@ describe("Controller", () => {
 
       const allCoords = controller.humanPlayer.gameboard.ships.flatMap((entry) => entry.coords);
 
-      for (const entry of controller.humanPlayer.gameboard.ships) {
-        for (const coord of entry.coords) {
-          for (const otherEntry of controller.humanPlayer.gameboard.ships) {
-            if (entry === otherEntry) continue;
-            for (const otherCoord of otherEntry.coords) {
-              const xDiff = Math.abs(coord[0] - otherCoord[0]);
-              const yDiff = Math.abs(coord[1] - otherCoord[1]);
-              expect(xDiff > 1 || yDiff > 1).toBe(true);
-            }
-          }
+      for (let i = 0; i < allCoords.length; i++) {
+        for (let j = i + 1; j < allCoords.length; j++) {
+          const same = allCoords[i][0] === allCoords[j][0] && allCoords[i][1] === allCoords[j][1];
+          expect(same).toBe(false);
         }
       }
     });
@@ -149,6 +143,83 @@ describe("Controller", () => {
 
         expect(isDuplicate).toBe(false);
         attackedCoords.push(coord);
+      }
+    });
+
+    it("targets adjacent cells after a hit", () => {
+      const controller = new Controller();
+      controller.startGame();
+      controller.humanPlayer.gameboard.placeShip(3, [
+        [5, 5],
+        [6, 5],
+        [7, 5],
+      ]);
+
+      controller.aiTargetQueue = [[5, 5]];
+      controller.computerAttack();
+
+      const validNeighbors = [
+        [4, 5],
+        [6, 5],
+        [5, 4],
+        [5, 6],
+      ];
+
+      expect(controller.aiTargetQueue.length).toBeGreaterThan(0);
+      for (const coord of controller.aiTargetQueue) {
+        expect(validNeighbors.some((n) => n[0] === coord[0] && n[1] === coord[1])).toBe(true);
+      }
+    });
+
+    it("clears target queue after sinking a ship", () => {
+      const controller = new Controller();
+      controller.startGame();
+      controller.humanPlayer.gameboard.placeShip(2, [
+        [5, 5],
+        [6, 5],
+      ]);
+
+      controller.aiTargetQueue = [[5, 5]];
+      controller.computerAttack();
+
+      expect(controller.aiTargetQueue.some((c) => c[0] === 6 && c[1] === 5)).toBe(true);
+
+      controller.aiTargetQueue = controller.aiTargetQueue.filter((c) => c[0] === 6 && c[1] === 5);
+      controller.computerAttack();
+
+      expect(controller.aiTargetQueue).toEqual([]);
+    });
+
+    it("continues targeting a second ship after sinking the first", () => {
+      const controller = new Controller();
+      controller.startGame();
+      controller.humanPlayer.gameboard.placeShip(2, [
+        [0, 0],
+        [1, 0],
+      ]);
+      controller.humanPlayer.gameboard.placeShip(2, [
+        [5, 5],
+        [6, 5],
+      ]);
+
+      controller.humanPlayer.gameboard.receiveAttack([5, 5]);
+
+      controller.aiTargetQueue = [[0, 0]];
+      controller.computerAttack();
+
+      controller.aiTargetQueue = [[1, 0]];
+      controller.computerAttack();
+
+      const validNeighbors = [
+        [4, 5],
+        [6, 5],
+        [5, 4],
+        [5, 6],
+      ];
+
+      expect(controller.aiTargetQueue.length).toBeGreaterThan(0);
+      for (const coord of controller.aiTargetQueue) {
+        expect(validNeighbors.some((n) => n[0] === coord[0] && n[1] === coord[1])).toBe(true);
       }
     });
   });

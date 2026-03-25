@@ -1,14 +1,15 @@
 # Battleship
 
-A Battleship game built for The Odin Project, featuring a Greyhound movie-inspired theme set in the North Atlantic, 1942.
+A browser based Battleship game
+
+**[Play it here](https://mattpjohnston.github.io/battleship/)**
 
 ## Features
 
 - **Ship Placement** - Randomise your fleet positioning before battle
 - **Turn-based Combat** - Click enemy waters to attack, then the computer responds
-- **Computer AI** - Makes random legal moves (never attacks the same coordinate twice)
+- **Computer AI** - Hunt/target mode: fires randomly until it finds a ship, then targets adjacent cells to sink it. Rebuilds its target queue when a ship sinks so it never loses track of partially found ships
 - **Win/Lose Detection** - Game ends when all ships of either player are sunk
-- **Greyhound Theme** - Dark, moody aesthetic inspired by the WWII naval film
 
 ## Built With
 

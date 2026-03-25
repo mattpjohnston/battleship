@@ -141,6 +141,12 @@ export default class Controller {
       }
     }
 
+    // Shuffle so the AI doesn't always try the same direction first
+    for (let i = neighbors.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [neighbors[i], neighbors[j]] = [neighbors[j], neighbors[i]];
+    }
+
     return neighbors;
   }
 
